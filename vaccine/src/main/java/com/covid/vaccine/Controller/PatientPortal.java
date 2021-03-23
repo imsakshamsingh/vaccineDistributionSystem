@@ -23,10 +23,15 @@ public class PatientPortal {
     HospitalRepo hospitalRepo;
 
 
+    @GetMapping("/all")
+    public List<Patient> getAllPatients(){
+        return patientRepo.findAll();
+    }
+
     @PostMapping("/enroll")
     public String enrollPatient(@RequestBody Patient patient) {
         Hospital finalHospital = null;
-        if (patient.getCity() != null && patient.getAge()!=0 && patient.getName()!=null) {
+        if (patient.getCity() != null && patient.getAge() != 0 && patient.getName() != null) {
             List<Hospital> hospitals = hospitalRepo.findByCity(patient.getCity());
             String hospitalId = null;
             for (Hospital hospital : hospitals) {
@@ -40,24 +45,41 @@ public class PatientPortal {
             if (hospitalId != null) {
 
                 patient.setHospitalId(hospitalId);
+                patient.setVaccinated(true);
+                patient.setNoOfTimesVaccinated(1);
+                patientRepo.save(patient);
+                return "Patient Enrolled Successfully in this hospital: " + finalHospital.getName();
+
+            } else {
                 patient.setVaccinated(false);
                 patient.setNoOfTimesVaccinated(0);
                 patientRepo.save(patient);
-            } else{
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"Insufficent Vaccines in Stock. Please try again later!");
+                return "Patient Queued, Currently no vaccines available, you will get a notification when there are some" +
+                        "vaccines available";
+
             }
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Missing Mandatory Patient Details");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing Mandatory Patient Details");
         }
 
-        return "Patient Enrolled Successfully in this hospital: " + finalHospital.getName();
+
     }
 
+    @GetMapping("/vaccinated/{isVaccinated}")
+    public List<Patient> getPatients(@PathVariable("isVaccinated") String isVaccinated) {
+        if ("yes".equals(isVaccinated)) {
+            return patientRepo.findByVaccinated(true);
+        } else if ("no".equals(isVaccinated)) {
+            return patientRepo.findByVaccinated(false);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect isVaccinated Value");
+        }
+    }
 
     @GetMapping("/findByHospitalId/{hospitalId}")
-    public List<Object> findByHospitalId(@PathVariable("hospitalId") String hospitalId){
+    public List<Hospital> findByHospitalId(@PathVariable("hospitalId") String hospitalId) {
 
-        System.out.println("hospital id : "+ hospitalId);
+        System.out.println("hospital id : " + hospitalId);
         return patientRepo.findByHospitalId(hospitalId);
     }
 }
