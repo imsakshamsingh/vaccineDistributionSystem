@@ -11,16 +11,24 @@ public class Patient {
     public String city;
     public Boolean vaccinated;
     public int noOfTimesVaccinated;
+    public String mobileNo;
 
+    public String getMobileNo() {
+        return mobileNo;
+    }
 
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
 
-    public Patient(String name, int age, String hospitalId, String city, Boolean vaccinated, int noOfTimesVaccinated) {
+    public Patient(String name, int age, String hospitalId, String city, Boolean vaccinated, int noOfTimesVaccinated, String mobileNo) {
         this.name = name;
         this.age = age;
         this.hospitalId = hospitalId;
         this.city = city;
         this.vaccinated = vaccinated;
         this.noOfTimesVaccinated = noOfTimesVaccinated;
+        this.mobileNo = mobileNo;
     }
 
     public Boolean getVaccinated() {
@@ -78,8 +86,9 @@ public class Patient {
                 ", age=" + age +
                 ", hospitalId='" + hospitalId + '\'' +
                 ", city='" + city + '\'' +
-                ", isVaccinated=" + vaccinated +
+                ", vaccinated=" + vaccinated +
                 ", noOfTimesVaccinated=" + noOfTimesVaccinated +
+                ", mobileNo='" + mobileNo + '\'' +
                 '}';
     }
 }

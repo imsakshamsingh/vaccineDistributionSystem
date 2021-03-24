@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/patient")
@@ -24,14 +25,14 @@ public class PatientPortal {
 
 
     @GetMapping("/all")
-    public List<Patient> getAllPatients(){
+    public List<Patient> getAllPatients() {
         return patientRepo.findAll();
     }
 
     @PostMapping("/enroll")
     public String enrollPatient(@RequestBody Patient patient) {
         Hospital finalHospital = null;
-        if (patient.getCity() != null && patient.getAge() != 0 && patient.getName() != null) {
+        if (patient.getCity() != null && patient.getAge() != 0 && patient.getName() != null && isValidMobileNo(patient.getMobileNo())) {
             List<Hospital> hospitals = hospitalRepo.findByCity(patient.getCity());
             String hospitalId = null;
             for (Hospital hospital : hospitals) {
@@ -63,6 +64,11 @@ public class PatientPortal {
         }
 
 
+    }
+
+    private boolean isValidMobileNo(String mobileNo) {
+        String regex = "([0]|\\+91)?[7-9][0-9]{9}";
+        return mobileNo.matches(regex);
     }
 
     @GetMapping("/vaccinated/{isVaccinated}")
