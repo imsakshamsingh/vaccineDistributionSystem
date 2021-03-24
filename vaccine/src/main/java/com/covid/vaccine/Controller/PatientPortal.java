@@ -82,10 +82,5 @@ public class PatientPortal {
         }
     }
 
-    @GetMapping("/findByHospitalId/{hospitalId}")
-    public List<Hospital> findByHospitalId(@PathVariable("hospitalId") String hospitalId) {
 
-        System.out.println("hospital id : " + hospitalId);
-        return patientRepo.findByHospitalId(hospitalId);
-    }
 }

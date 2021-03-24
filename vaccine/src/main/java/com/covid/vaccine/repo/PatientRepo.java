@@ -13,5 +13,6 @@ public interface PatientRepo extends MongoRepository<Patient,String> {
     public List<Patient> findByVaccinated(Boolean isVaccinated);
 
 //    @Query(value = "{hospitalId : ?0}", fields = "{ 'name' : 1, 'age' : 1, 'city' : 1, 'noOfTimesVaccinated':1 , 'vaccinated':1}")
-    public List<Hospital> findByHospitalId(String hospitalId);
+    public List<Patient> findByHospitalId(String hospitalId);
+
 }

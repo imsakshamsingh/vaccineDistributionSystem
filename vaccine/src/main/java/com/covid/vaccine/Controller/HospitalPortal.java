@@ -37,4 +37,13 @@ public class HospitalPortal {
         return hospitalRepo.findAll();
     }
 
+
+    @GetMapping("patients/{hospitalId}")
+    public List<Patient> getPatients(@PathVariable("hospitalId") String hospitalId){
+
+        List<Patient> result = patientRepo.findByHospitalId(hospitalId);
+        if(result==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No Patients Found for Hospital ID: "+hospitalId);
+        return result;
+    }
+
 }
