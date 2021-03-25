@@ -32,7 +32,7 @@ public class PatientPortal {
     @PostMapping("/enroll")
     public String enrollPatient(@RequestBody Patient patient) {
         Hospital finalHospital = null;
-        if (patient.getCity() != null && patient.getAge() != 0 && patient.getName() != null && isValidMobileNo(patient.getMobileNo())) {
+        if (patient.getCity() != null && patient.getAge() != 0 && patient.getName() != null && isValidMobileNo(patient.getMobileNo()) && isValidEmailAddress(patient.getEmail())) {
             List<Hospital> hospitals = hospitalRepo.findByCity(patient.getCity());
             String hospitalId = null;
             for (Hospital hospital : hospitals) {
@@ -67,8 +67,15 @@ public class PatientPortal {
     }
 
     private boolean isValidMobileNo(String mobileNo) {
+        if (mobileNo == null) return false;
         String regex = "([0]|\\+91)?[7-9][0-9]{9}";
         return mobileNo.matches(regex);
+    }
+
+    private boolean isValidEmailAddress(String email) {
+        if (email == null) return false;
+        String regex = "[a-zA-Z0-9]+[@]{1}(gmail.com)";
+        return email.matches(regex);
     }
 
     @GetMapping("/vaccinated/{isVaccinated}")
