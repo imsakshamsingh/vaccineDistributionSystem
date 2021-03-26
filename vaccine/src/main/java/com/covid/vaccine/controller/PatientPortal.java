@@ -1,4 +1,4 @@
-package com.covid.vaccine.Controller;
+package com.covid.vaccine.controller;
 
 
 import com.covid.vaccine.model.Hospital;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/patient")

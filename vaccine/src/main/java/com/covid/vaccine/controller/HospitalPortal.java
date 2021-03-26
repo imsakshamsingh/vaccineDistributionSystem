@@ -1,25 +1,18 @@
-package com.covid.vaccine.Controller;
+package com.covid.vaccine.controller;
 
 import com.covid.vaccine.model.Hospital;
 import com.covid.vaccine.model.Patient;
 import com.covid.vaccine.repo.HospitalRepo;
 import com.covid.vaccine.repo.PatientRepo;
 import com.covid.vaccine.utils.CommonUtils;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @RestController
 @RequestMapping("/hospital")
@@ -92,6 +85,24 @@ public class HospitalPortal {
             res.append("Notified these patients via email: ").append(mailsSentToThesePatients.stream().map(Patient::getName).collect(Collectors.toList()));
 
         return res.toString();
+    }
+
+    @PatchMapping("/patient/vaccinated/{patientId}")
+    Patient updatePatient(@PathVariable("patientId") String patientId) {
+        Optional<Patient> result = patientRepo.findById(patientId);
+        Patient patient;
+        if (result.isPresent()) {
+            patient = result.get();
+            int noOfTimesVaccianted = patient.getNoOfTimesVaccinated();
+            if (noOfTimesVaccianted == 2) return patient;
+            noOfTimesVaccianted++;
+            patient.setNoOfTimesVaccinated(noOfTimesVaccianted);
+            patient.setVaccinated(Boolean.TRUE);
+            patientRepo.save(patient);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient Not Found with this Id: " + patientId);
+        }
+        return patient;
     }
 
 }
